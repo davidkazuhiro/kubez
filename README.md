@@ -3,6 +3,19 @@ Checks the RBAC AuthZ you have on Kubernetes
 
 ## Usage
 
+## Setup
+
+You'll need to start your kubectl proxy for this script to work.
+Make sure the port number is the same as below
+
+```
+$ kubectl proxy
+Starting to serve on 127.0.0.1:8001
+```
+
+
+## Execution
+
 Once you execute the script with `./kubez.sh`, it will display your context
 which includes the cluster name, your username, and your namespace.
 
@@ -12,7 +25,6 @@ before it starts verifying your permissions.
 ```
 $ ./kubez.sh 
 This script will check your permissions on the following context
-(Script repo: https://ghe.rakuten-it.com/david-somers-harris/kubez)
 
 {
   "name": "jpe2-zed2-dev-david.somers-harris-esd-sandbox",
