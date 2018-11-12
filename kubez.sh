@@ -20,6 +20,18 @@ then
   exit 1
 fi
 
+if ! command -v nc >/dev/null 2>&1
+then
+  echo nc not installed
+  exit 1
+fi
+
+if ! nc -z localhost 8001 >/dev/null 2>&1
+then
+  echo Please first start kubectl proxy on port 8001
+  exit 1
+fi
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
