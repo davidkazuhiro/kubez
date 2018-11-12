@@ -4,6 +4,22 @@
 # Written by David Somers-Harris <david.somers-harris@rakuten.com>
 # Based on https://stackoverflow.com/a/51289417
 
+
+###
+# Pre-run checks
+
+if ! command -v jq >/dev/null 2>&1
+then
+  echo jq not installed
+  exit 1
+fi
+
+if ! command -v kubectl >/dev/null 2>&1
+then
+  echo kubectl not installed
+  exit 1
+fi
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
@@ -12,9 +28,9 @@ yes_count=0
 total_count=0
 
 echo This script will check your permissions on the following context
-echo 
+echo
 current_context=$(kubectl config view -o json | jq '.["current-context"]')
-kubectl config view -o json | jq '.contexts[] | select( .name == '"${current_context}"' )' 
+kubectl config view -o json | jq '.contexts[] | select( .name == '"${current_context}"' )'
 
 sleep 5
 
@@ -30,16 +46,16 @@ for api in $APIS; do
         apipath=$SERVER/api/v1
         ;;
       *)
-        version=$(curl -s $SERVER/apis/$api | jq -r '.preferredVersion.version')
+        version=$(curl -s "$SERVER/apis/$api" | jq -r '.preferredVersion.version')
         apipath=$SERVER/apis/$api/$version
     esac
     echo
     echo "######"
     echo "# API: ${api}"
-    for type in $(curl -s ${apipath} | jq -r '.resources | .[]? | "\(.name)"')
+    for type in $(curl -s "${apipath}" | jq -r '.resources | .[]? | "\(.name)"')
     do
-      echo -e "\nRESOURCE: ${type}"
-      verbs=$(curl -s ${apipath} | jq -r '.resources | .[]? | select( .name == "'"${type}"'" ) | .verbs[]')
+      echo -e "\\nRESOURCE: ${type}"
+      verbs=$(curl -s "${apipath}" | jq -r '.resources | .[]? | select( .name == "'"${type}"'" ) | .verbs[]')
       if [[ ${api} == "authentication.k8s.io" ]]
       then
         verbs+=' userextras'
@@ -88,21 +104,21 @@ for api in $APIS; do
       verbs="$(echo -e "${verbs}" | sed -e 's/^[[:space:]]*//')"
       for verb in ${verbs}
       do
-        if [[ $type =~ '/' ]]
+        if [[ ${type} =~ '/' ]]
         then
-          subresource=$(echo ${type} | cut -d '/' -f 2)
-          type=$(echo ${type} | cut -d '/' -f 1)
-          result=$(kubectl auth can-i $verb $type --subresource=$subresource)
+          subresource=$(echo "${type}" | cut -d '/' -f 2)
+          type=$(echo "${type}" | cut -d '/' -f 1)
+          result=$(kubectl auth can-i "${verb}" "${type}" --subresource="${subresource}")
         else
-          result=$(kubectl auth can-i $verb $type)
+          result=$(kubectl auth can-i "${verb}" "${type}")
         fi
       case ${result} in
         'yes')
           (( yes_count+=1 ))
-          printf "%-18s ${GREEN}%s${NC}\n" ${verb} ${result}
+          printf "%-18s ${GREEN}%s${NC}\\n" "${verb}" "${result}"
           ;;
         'no')
-	  printf "%-18s ${RED}%s${NC}\n" ${verb} ${result}
+	  printf "%-18s ${RED}%s${NC}\\n" "${verb}" "${result}"
 	  ;;
         *)
 	  echo "ERROR"
