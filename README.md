@@ -3,21 +3,23 @@ Checks the RBAC AuthZ you have on Kubernetes
 
 ## Usage
 
-1. Make sure your kubectl is authenticated
-1. Make sure your context is what you want
+Once you execute the script with `./kubez.sh`, it will display your context
+which includes the cluster name, your username, and your namespace.
 
-   ```
-   kubectl config current-context
-   ```
-   
-1. Make sure your namespace is what you want
+The script will wait for 5 seconds to give you a chance to make sure this is correct
+before it starts verifying your permissions.
 
-   ```
-   kubectl config view | grep namespace: -A 2 -B 2
-   ```
+```
+$ ./kubez.sh 
+This script will check your permissions on the following context
+(Script repo: https://ghe.rakuten-it.com/david-somers-harris/kubez)
 
-1. Run the script
-
-   ```
-   ./kubez.sh
-   ```
+{
+  "name": "jpe2-zed2-dev-david.somers-harris-esd-sandbox",
+  "context": {
+    "cluster": "jpe2-zed2-dev",
+    "user": "david.somers-harris-jpe2-zed2-dev",
+    "namespace": "cpd-tam"
+  }
+}
+```

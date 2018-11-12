@@ -1,5 +1,11 @@
 #!/bin/bash
 
+###
+# Written by David Somers-Harris <david.somers-harris@rakuten.com>
+
+# A better way to do this is written here
+# https://stackoverflow.com/a/51289417
+
 verbs="create expose run set explain get edit delete rollout scale autoscale certificate cordon uncordon drain taint apply patch replace wait convert label annotate"
 
 RED='\033[0;31m'
@@ -8,6 +14,15 @@ NC='\033[0m'
 
 yes_count=0
 total_count=0
+
+echo This script will check your permissions on the following context
+echo "(Script repo: https://ghe.rakuten-it.com/david-somers-harris/kubez)"
+echo ""
+current_context=$(kubectl config view -o json | jq '.["current-context"]')
+kubectl config view -o json | jq '.contexts[] | select( .name == '"${current_context}"' )' 
+
+sleep 5
+
 
 for type in $(kubectl api-resources | awk '{print $1}' | tail -n +2)
 do
