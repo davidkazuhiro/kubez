@@ -5,8 +5,17 @@ Checks the RBAC AuthZ you have on Kubernetes
 
 ## Setup
 
-You'll need to start your kubectl proxy for this script to work.
-Make sure the port number is the same as below
+This script needs the following utilities, and will yell at you if they are not installed.
+
+```
+bash
+jq
+kubectl
+nc
+```
+
+You'll also need to start your kubectl proxy for this script to work.
+Make sure the port number is the same as below:
 
 ```
 $ kubectl proxy
