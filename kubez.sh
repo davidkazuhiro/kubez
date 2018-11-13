@@ -8,23 +8,14 @@
 ###
 # Pre-run checks
 
-if ! command -v jq >/dev/null 2>&1
-then
-  echo jq not installed
-  exit 1
-fi
-
-if ! command -v kubectl >/dev/null 2>&1
-then
-  echo kubectl not installed
-  exit 1
-fi
-
-if ! command -v nc >/dev/null 2>&1
-then
-  echo nc not installed
-  exit 1
-fi
+for dependency in {jq,kubectl,nc}
+do
+  if ! command -v ${dependency} >/dev/null 2>&1
+  then
+    echo ${dependency} not installed
+    exit 1
+  fi
+done
 
 if ! nc -z localhost 8001 >/dev/null 2>&1
 then
@@ -32,12 +23,15 @@ then
   exit 1
 fi
 
+###
+# Global Variables
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
-
 yes_count=0
 total_count=0
+SERVER="localhost:8001"
 
 echo This script will check your permissions on the following context
 echo
@@ -45,9 +39,6 @@ current_context=$(kubectl config view -o json | jq '.["current-context"]')
 kubectl config view -o json | jq '.contexts[] | select( .name == '"${current_context}"' )'
 
 sleep 5
-
-
-SERVER="localhost:8001"
 
 APIS="core "
 APIS+=$(curl -s $SERVER/apis | jq -r '[.groups | .[].name] | join(" ")')
