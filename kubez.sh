@@ -65,41 +65,23 @@ for api in $APIS; do
       fi
       case $type in
         # hack for https://github.com/kubernetes/kubernetes/issues/65421
-        'nodes/proxy')
+        nodes/proxy)
           verbs+='create delete get patch update'
           ;;
-        'pods/attach')
+        pods/attach | pods/exec | pods/portforward)
           verbs+=' create get'
           ;;
-        'pods/exec')
-          verbs+=' create get'
-          ;;
-        'pods/portforward')
-          verbs+=' create get'
-          ;;
-        'pods/proxy')
-          verbs+=' create delete get patch update'
-          ;;
-        'services/proxy')
+        pods/proxy | services/proxy)
           verbs+=' create delete get patch update'
           ;;
         # add specialized verbs https://kubernetes.io/docs/reference/access-authn-authz/authorization/#determine-the-request-verb
-        'podsecuritypolicies')
+        podsecuritypolicies)
           verbs+=' use'
           ;;
-        'roles')
+        roles | clusterroles)
           verbs+=' bind'
           ;;
-        'clusterroles')
-          verbs+=' bind'
-          ;;
-        'users')
-          verbs+=' impersonate'
-          ;;
-        'groups')
-          verbs+=' impersonate'
-          ;;
-        'serviceaccounts')
+        users | groups | serviceaccounts)
           verbs+=' impersonate'
           ;;
       esac

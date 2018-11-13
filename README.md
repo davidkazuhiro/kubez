@@ -36,11 +36,12 @@ $ ./kubez.sh
 This script will check your permissions on the following context
 
 {
-  "name": "jpe2-zed2-dev-david.somers-harris-esd-sandbox",
+  "name": "example-context",
   "context": {
-    "cluster": "jpe2-zed2-dev",
-    "user": "david.somers-harris-jpe2-zed2-dev",
-    "namespace": "cpd-tam"
+    "cluster": "example-cluster",
+    "user": "example-user",
+    "namespace": "example-namespace"
   }
 }
+...
 ```
